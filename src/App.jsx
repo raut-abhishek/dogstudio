@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { Canvas } from '@react-three/fiber';
+import Dog from './components/Dog';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-
+    <Canvas>
+      <Dog/>
+    </Canvas>
     </>
   )
 }
