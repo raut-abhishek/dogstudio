@@ -1,10 +1,22 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
 import { OrbitControls, useGLTF, useTexture, useAnimations } from '@react-three/drei';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+
 
 const Dog = () => {
 
+  // GSAP plugins
+  gsap.registerPlugin(useGSAP());
+  gsap.registerPlugin(ScrollTrigger);
+
+ 
+
+  // Dog Model
 
     const model = useGLTF("/models/dog.drc.glb");
 
@@ -22,24 +34,14 @@ const Dog = () => {
 
 
 
-    // const textures = useTexture({
-    //   normalMap: "/dog_normals.jpg",
-    //   sampleMatCap:"/matcap/mat-2.png"
-    // },(texture)=>{
-    //   texture.flipY = false;
-    //   texture.colorSpace = THREE.SRGBColorSpace;
-    // })
-
-    const [normalMap, sampleMatCap] = (useTexture(["/dog_normals.jpg", "/matcap/mat-2.png"]))
-      .map(texture =>{
+    const [normalMap, sampleMatCap] = (useTexture(["/dog_normals.jpg", "/matcap/mat-2.png"])).map(texture =>{
         texture.flipY = false,
         texture.colorSpace = THREE.SRGBColorSpace
         return texture;
     })
 
 
-    const [branchMap, branchNormalMap] = useTexture(["branches_diffuse.jpeg", "branches_normals.jpeg"])
-      .map(texture =>{
+    const [branchMap, branchNormalMap] = useTexture(["branches_diffuse.jpeg", "branches_normals.jpeg"]).map(texture =>{
           texture.flipY = true,
           texture.colorSpace = THREE.SRGBColorSpace
           return texture;
@@ -64,6 +66,31 @@ const Dog = () => {
         child.material = branchMaterial 
       }
     })
+
+
+  const dogModel = useRef(model)
+
+
+  useGSAP(()=>{
+
+    const tl = gsap.timeline({
+      scrollTrigger:{
+        trigger:"section-1",
+        endTrigger:"section-3",
+        start:"top top",
+        end:"bottom bottom",
+        markers: true,
+        scrub:true
+      }
+    })
+
+    tl.to(dogModel.current.scene.position,{
+      z:"-0.5"
+    })
+
+
+
+  },[])
  
     
 
@@ -81,3 +108,5 @@ const Dog = () => {
 
 export default Dog;
 
+
+// 3:07
